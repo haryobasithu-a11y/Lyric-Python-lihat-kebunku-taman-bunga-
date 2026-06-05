@@ -1,0 +1,52 @@
+import time
+from threading import Thread, Lock
+import sys
+
+lock = Lock()
+
+def animate_text(text, speed=0.1):
+    with lock:
+        for char in text:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(speed)
+        print("\n")
+
+def sing_lyric(lyric, delay, speed):
+    time.sleep(delay)
+    animate_text(lyric, speed)
+
+def sing_song():
+    lyrics = [
+        ("Lihat kebunku\nTercipta sempurna\nSederhana\nSatu yang kupunya", 0, 0.15),
+
+        ("Setiap hari\nKusiram sendiri\nWahai melati\nKau cantik berseri", 5, 0.15),
+
+        ("Sungguh kelabu\nKulukis indah rupamu\nOh sungguh layu\nHarapanku kepadamu", 10, 0.15),
+
+        ("Oh mengapa\nBunga di taman hatiku hanya satu\nOh menghilang\nBunga kesayanganku diambil orang", 15, 0.15),
+
+        ("Mekarlah selamanya di taman yang lain", 20, 0.15),
+
+        ("Sungguh kelabu\nKini tamanku tanpamu\nJangan kau layu\nSemesta kan menjagamu", 25, 0.15),
+
+        ("Oh mengapa\nBunga di taman hatiku hanya satu\nOh menghilang\nBunga kesayanganku tak mengapa", 30, 0.15),
+
+        ("Bila di taman hatiku tak berbunga\nBersenanglah\nBunga kesayanganku tumbuh bahagia", 35, 0.15)
+    ]
+
+    threads = []
+
+    for lyric, delay, speed in lyrics:
+        thread = Thread(
+            target=sing_lyric,
+            args=(lyric, delay, speed)
+        )
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
+
+if __name__ == "__main__":
+    sing_song()
